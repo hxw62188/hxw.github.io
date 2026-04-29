@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>文化遗产数字化 · 互动案例库</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f9f6f0;
+            color: #2c241a;
+            line-height: 1.5;
+            scroll-behavior: smooth;
+        }
+        .navbar {
+            background: rgba(255, 248, 240, 0.92);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 1rem 5%;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            border-bottom: 1px solid #e5d9ce;
+        }
+        .logo {
+            font-weight: 700;
+            font-size: 1.4rem;
+            background: linear-gradient(135deg, #b87c4a, #5a3e2b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .logo i {
+            color: #b87c4a;
+            background: none;
+            -webkit-background-clip: unset;
+            margin-right: 6px;
+        }
+        .nav-links {
+            display: flex;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: #4a3727;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+        .nav-links a:hover {
+            color: #c46b35;
+        }
+        .hero {
+            background: linear-gradient(120deg, #f3ede5, #fefaf5);
+            padding: 2.5rem 5% 3rem;
+            text-align: center;
+        }
+        .hero h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #3e2a21;
+        }
+        .hero p {
+            max-width: 680px;
+            margin: 0.8rem auto 0;
+            color: #5e4b38;
+        }
+        .filter-bar {
+            padding: 1.5rem 5% 0.8rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.8rem;
+        }
+        .filter-btn {
+            background: white;
+            border: 1px solid #ddd0c2;
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: inherit;
+            color: #4a3a2c;
+        }
+        .filter-btn.active {
+            background: #b87c4a;
+            border-color: #b87c4a;
+            color: white;
+        }
+        .filter-btn:hover {
+            background: #d9c6b2;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 1.5rem auto 3rem;
+            padding: 0 5%;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 2rem;
+        }
+        .card {
+            background: white;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px -8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid #ece0d4;
+        }
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 30px -12px rgba(0,0,0,0.2);
+        }
+        .card-img {
+            height: 180px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        .card-cat {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            background: rgba(0,0,0,0.65);
+            backdrop-filter: blur(4px);
+            padding: 0.2rem 0.9rem;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #f0e3d4;
+            letter-spacing: 0.5px;
+        }
+        .card-content {
+            padding: 1.3rem 1.3rem 1.6rem;
+        }
+        .card h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 0.4rem;
+        }
+        .card p {
+            color: #5c4b3a;
+            font-size: 0.9rem;
+            margin: 0.5rem 0;
+        }
+        .tech-tag {
+            display: inline-block;
+            background: #f0e7df;
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-right: 0.5rem;
+            margin-top: 0.5rem;
+            color: #7a5a40;
+        }
+        /* 模态框 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(6px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            overflow-y: auto;
+        }
+        .modal-card {
+            background: #fffef7;
+            max-width: 750px;
+            width: 90%;
+            margin: 2rem auto;
+            border-radius: 2rem;
+            padding: 1.8rem;
+            position: relative;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 30px 40px rgba(0,0,0,0.3);
+        }
+        .close-modal {
+            position: absolute;
+            right: 1.5rem;
+            top: 1rem;
+            font-size: 1.8rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-weight: 300;
+        }
+        .modal h2 {
+            font-size: 1.8rem;
+            margin-bottom: 0.2rem;
+        }
+        .modal-sub {
+            color: #b87c4a;
+            border-left: 4px solid #b87c4a;
+            padding-left: 0.8rem;
+            margin: 0.5rem 0 1rem;
+            font-weight: 500;
+        }
+        .modal-section {
+            margin: 1.2rem 0;
+        }
+        .modal-section h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        hr {
+            margin: 1rem 0;
+            border: 0;
+            height: 1px;
+            background: #e5d9ce;
+        }
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: #7f6b58;
+            font-size: 0.8rem;
+            border-top: 1px solid #e5d9ce;
+        }
+        @media (max-width: 640px) {
+            .container { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <div class="logo"><i class="fas fa-landmark"></i> 遗产数智库</div>
+    <div class="nav-links">
+        <a href="#">案例</a>
+        <a href="#">创新观察</a>
+        <a href="#">关于</a>
+    </div>
+</div>
+
+<div class="hero">
+    <h1><i class="fas fa-cube"></i> 文化遗产数字化 · 互动案例库</h1>
+    <p>敦煌·故宫·兵马俑·巴黎圣母院·庞贝 — 沉浸式体验科技与文明的共融</p>
+    <div class="insight-badge" style="margin-top: 1.2rem;">
+        <span style="background:#e6d9cd; padding:0.2rem 1rem; border-radius:40px;">🔍 点击卡片 · 深度解析</span>
+    </div>
+</div>
+
+<div class="filter-bar">
+    <button class="filter-btn active" data-filter="all">全部</button>
+    <button class="filter-btn" data-filter="china">中国遗产</button>
+    <button class="filter-btn" data-filter="overseas">海外遗产</button>
+    <button class="filter-btn" data-filter="vr">VR/AR体验</button>
+</div>
+
+<div class="container" id="cardsContainer"></div>
+
+<div id="detailModal" class="modal">
+    <div class="modal-card">
+        <button class="close-modal">&times;</button>
+        <div id="modalContent"></div>
+    </div>
+</div>
+
+<div class="footer">
+    <i class="fas fa-database"></i> 五个真实案例 · 数据源于公开可查遗产数字化项目 | 交互网页 · 文化遗产创新实验室
+</div>
+
+<script>
+    const caseData = [
+        {
+            id: 1,
+            name: "敦煌莫高窟",
+            sub: "数字敦煌",
+            region: "china",
+            tags: ["VR全景", "壁画扫描", "丝路文明"],
+            categoryShow: "中国 · 世界遗产",
+            bgImg: "https://picsum.photos/id/104/800/500",  // 示意敦煌风格，可替换真实图。 建议可换为真实敦煌CC0
+            summary: "30个洞窟VR全景开放，高精度壁画数字化，全球免费访问。",
+            culture: "始建于366年，735个洞窟，4.5万㎡壁画，佛教艺术宝库。核心痛点：开放与保护矛盾。",
+            tech: "壁画300DPI扫描 + 三维激光建模 + 全景摄影合成。",
+            experience: "访问e-dunhuang.com → 选洞窟 → 360°漫游+热点查看细节。",
+            innovation: "数字敦煌项目在保护模式上以数字替代减少实地参观压力；技术集成壁画扫描、三维建模和VR全景；开创全球免费访问先例；高精度数据向学者开放，推动敦煌学协作研究。"
+        },
+        {
+            id: 2,
+            name: "故宫博物院",
+            sub: "数字文物库 & VR故宫",
+            region: "china",
+            tags: ["10万+文物", "AI修复", "VR未开放区"],
+            categoryShow: "中国 · 故宫",
+            bgImg: "https://picsum.photos/id/96/800/500",
+            summary: "在线观赏超10万件文物高清细节，VR漫游养心殿。",
+            culture: "明清两代皇宫，馆藏186万件文物，展出率不足1%，数字化解决“看不见”的问题。",
+            tech: "10亿像素级拍摄、全景VR、AI辅助色彩修复。",
+            experience: "访问digicol.dpm.org.cn → 检索文物 → 放大至笔触细节；V故宫佩戴VR眼镜游览未开放区。",
+            innovation: "规模上全球博物馆领先，10万+件在线；影像精度可看清丝绸纹理；完全免费无需预约；AI辅助修复为实体文物提供参考。"
+        },
+        {
+            id: 3,
+            name: "秦始皇兵马俑",
+            sub: "三维数字化",
+            region: "china",
+            tags: ["0.1mm精度", "虚拟拼接", "数字碎片库"],
+            categoryShow: "中国 · 秦陵",
+            bgImg: "https://picsum.photos/id/107/800/500",
+            summary: "毫米级精度重建陶俑，支持虚拟修复与在线交互查看。",
+            culture: "秦始皇陵陪葬坑，8000件陶俑，被誉为世界第八大奇迹，出土多为碎片，修复艰巨。",
+            tech: "三维激光扫描+近景摄影测量+多光谱成像。",
+            experience: "官网数字展厅 → 选择陶俑 → 鼠标拖拽缩放360°观察，考古人员虚拟拼接。",
+            innovation: "0.1mm精度可呈现指纹细节；建立数字碎片库降低修复试错成本；观众在线查看背面/底部细节；建立永久数字档案对抗风化。"
+        },
+        {
+            id: 4,
+            name: "巴黎圣母院",
+            sub: "激光雷达数字存档",
+            region: "overseas",
+            tags: ["LiDAR", "BIM", "火灾修复"],
+            categoryShow: "法国 · 哥特式",
+            bgImg: "https://picsum.photos/id/147/800/500",
+            summary: "2015年提前完成10亿点云扫描，火灾后成为修复核心依据。",
+            culture: "始建于1163年，2019年大火烧毁尖塔与屋顶，缺少精确历史数据将无法原样重建。",
+            tech: "激光雷达点云+全景映射+BIM建筑信息模型。",
+            experience: "研究者申请数据→专业软件加载点云→测量每一块石头→虚拟重建指导施工。",
+            innovation: "超前四年数字备份；10亿点云毫米级精度；从学术数据跃升为国家修复工程核心依据；树立文物防灾『数字副本』全球范式。"
+        },
+        {
+            id: 5,
+            name: "庞贝古城",
+            sub: "大尺度遗址数字化",
+            region: "overseas",
+            tags: ["GIS", "AR现场复原", "倾斜摄影"],
+            categoryShow: "意大利 · 古罗马",
+            bgImg: "https://picsum.photos/id/127/800/500",
+            summary: "66公顷遗址全覆盖，AR导览让游客“看见”被掩埋前的城市。",
+            culture: "公元79年火山掩埋，完整呈现古罗马城市生活，但游客难以想象原貌。",
+            tech: "无人机倾斜摄影+地面激光+GIS+移动AR。",
+            experience: "现场下载AR应用 → 扫过建筑 → 屏幕叠加完整复原形态；远程GIS平台浏览三维遗址。",
+            innovation: "全球最大规模遗址级全覆盖（66公顷）；融合倾斜摄影+GIS+AR完整方案；现场AR让普通游客可见消失建筑；数字化支撑游客流管理与保护规划。"
+        }
+    ];
+
+    const container = document.getElementById("cardsContainer");
+    const modal = document.getElementById("detailModal");
+    const modalContent = document.getElementById("modalContent");
+    const closeModalBtn = document.querySelector(".close-modal");
+
+    let currentFilter = "all";
+
+    function renderCards() {
+        let filtered = caseData.filter(item => {
+            if (currentFilter === "all") return true;
+            if (currentFilter === "china") return item.region === "china";
+            if (currentFilter === "overseas") return item.region === "overseas";
+            if (currentFilter === "vr") return item.tags.some(t => t.includes("VR") || t.includes("AR"));
+            return true;
+        });
+        container.innerHTML = filtered.map(item => `
+            <div class="card" data-id="${item.id}">
+                <div class="card-img" style="background-image: linear-gradient(0deg, rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('${item.bgImg}');">
+                    <span class="card-cat">${item.categoryShow}</span>
+                </div>
+                <div class="card-content">
+                    <h3>${item.name}</h3>
+                    <p style="font-weight: 500; color:#b46530;">${item.sub}</p>
+                    <p>${item.summary}</p>
+                    <div>
+                        ${item.tags.map(tag => `<span class="tech-tag">#${tag}</span>`).join('')}
+                    </div>
+                </div>
+            </div>
+        `).join('');
+        // 绑定卡片点击事件
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('click', (e) => {
+                const id = parseInt(card.getAttribute('data-id'));
+                const data = caseData.find(c => c.id === id);
+                if (data) openModal(data);
+            });
+        });
+    }
+
+    function openModal(data) {
+        modalContent.innerHTML = `
+            <h2>${data.name} · ${data.sub}</h2>
+            <div class="modal-sub">${data.categoryShow}  |  ${data.tags.join(" · ")}</div>
+            <div class="modal-section">
+                <h4><i class="fas fa-history"></i> 文化背景</h4>
+                <p>${data.culture}</p>
+            </div>
+            <div class="modal-section">
+                <h4><i class="fas fa-microchip"></i> 核心技术</h4>
+                <p>${data.tech}</p>
+            </div>
+            <div class="modal-section">
+                <h4><i class="fas fa-route"></i> 体验流程</h4>
+                <p>${data.experience}</p>
+            </div>
+            <div class="modal-section">
+                <h4><i class="fas fa-lightbulb"></i> 创新之处</h4>
+                <p>${data.innovation}</p>
+            </div>
+            <hr />
+            <p style="font-size:0.8rem; color:#887561;"><i class="fas fa-check-circle"></i> 真实可查证 · 基于公开文化遗产数字化项目资料</p>
+        `;
+        modal.style.display = "flex";
+    }
+
+    function closeModal() {
+        modal.style.display = "none";
+    }
+
+    // 筛选事件
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentFilter = btn.getAttribute('data-filter');
+            renderCards();
+        });
+    });
+
+    closeModalBtn.addEventListener('click', closeModal);
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+
+    renderCards();
+</script>
+</body>
+</html>
